@@ -1,0 +1,22 @@
+job('Sqream_ha_job_dsl_proxy') {
+    
+    scm {
+        git('https://github.com/yaronkalatian/sqream_ha_solution.git') {  node -> // is hudson.plugins.git.GitSCM
+            node / gitConfigName('yaronkalatian')
+            node / gitConfigEmail('kalatianyaron@gmail.com')
+        }
+    }
+    triggers {
+        scm('H/35 * * * *')
+    }
+    steps {
+        batchFile("docker-compose build")
+        batchFile("docker-compose up -d")
+        batchFile("curl localhost:8000")
+ 		batchFile("docker image tag sqream_ha_job_dsl_proxy_flask-app yaronkalatian/yaronkalatian2671:sqream_ha_job_dsl_proxy_flask-app")
+		batchFile("docker login -u yaronkalatian -p a7bce4d1-557b-4445-a911-646164ca94d6")
+		batchFile("docker image push  docker.io/yaronkalatian/yaronkalatian2671:sqream_ha_job_dsl_proxy_flask-app")
+ 		batchFile("docker image tag sqream_ha_job_dsl_proxy_nginx-proxy yaronkalatian/yaronkalatian2671:sqream_ha_job_dsl_proxy_nginx-proxy")
+		batchFile("docker image push  docker.io/yaronkalatian/yaronkalatian2671:sqream_ha_job_dsl_proxy_nginx-proxy")
+   }
+}
