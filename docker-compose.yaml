@@ -1,0 +1,21 @@
+services:
+  nginx-proxy:
+    build: nginx
+    restart: always
+    volumes:
+      - ./nginx/default.conf:/tmp/default.conf
+    environment: 
+      - FLASK_SERVER_ADDR=flask-app:8000
+    ports:
+      - "80:80"
+    depends_on:
+      - flask-app
+  flask-app:
+    build: flask
+    restart: always
+    ports: 
+      - '8000:5000'
+    depends_on:
+      - redis
+  redis:
+    image: redis    
